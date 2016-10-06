@@ -2,22 +2,19 @@
 
 import sys
 import re
-import urllib
+import urllib2
 from bs4 import BeautifulSoup
 
-def getHtml(url):
-    page = urllib.urlopen(url)
-    html = page.read()
-    return html
+def get_page_source(url):
+    page_source = urllib2.urlopen(url).read()
+    return str(page_source)
     
-def getImg(html):
-    imgre = re.compile(r'src="(.+?\.jpg)" pic_ext')
-    imglist = re.findall(imgre, html)
-    x = 0
-    for imgurl in imglist:
-        urllib.urlretrieve(imgurl, '%s.jpg' % x)
-        x += 1
-
+def parse_text(plain_text):
+    soup = BeautifulSoup(plain_text, "html.parser")
+    list_soup = soup.find('title')
+    # print list_soup
+    print list_soup.string.strip()
+    
 if __name__ == "__main__":
-    html = getHtml("http://tieba.baidu.com/p/2460150866")
-    getImg(html)
+    page = get_page_source("https://book.douban.com/subject/26873486/?icn=index-editionrecommend")
+    parse_text(page)
