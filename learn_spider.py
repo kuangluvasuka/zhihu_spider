@@ -1,20 +1,33 @@
 #-*- coding: UTF-8 -*-
 
 import sys
-import re
-import urllib2
-from bs4 import BeautifulSoup
+import utils
+from utils import URLManager, Outputer
 
-def get_page_source(url):
-    page_source = urllib2.urlopen(url).read()
-    return str(page_source)
+def spider(root_url):
+    urls = URLManager()
+    outputer = Outputer()
+    count = 1
     
-def parse_text(plain_text):
-    soup = BeautifulSoup(plain_text, "html.parser")
-    list_soup = soup.find('title')
-    # print list_soup
-    print list_soup.string.strip()
-    
+    urls.add_new_url(root_url)
+    while urls.has_new_url():
+        try:
+            new_url = urls.get_new_url()
+            print 'craw %d: %s' % (count, new_url)
+            html_source = utils.html_downloader(new_url)
+            new_urls, new_data = utils.parser(new_url, html_source)
+
+            urls.add_new_urls(new_urls)
+            outputer.collect_data(new_data)
+            count += 1
+            if count == 10:
+                break
+
+        except Exception as err:
+            print 'craw failed: ', err
+
+        outputer.output_html()
+
 if __name__ == "__main__":
-    page = get_page_source("https://book.douban.com/subject/26873486/?icn=index-editionrecommend")
-    parse_text(page)
+    root_url = "http://baike.baidu.com/view/21087.htm"
+    spider(root_url)
