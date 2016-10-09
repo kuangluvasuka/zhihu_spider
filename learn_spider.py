@@ -4,6 +4,8 @@ import sys
 import utils
 from utils import URLManager, Outputer
 
+kMaxDepth = 10
+
 def spider(root_url):
     urls = URLManager()
     outputer = Outputer()
@@ -20,7 +22,7 @@ def spider(root_url):
             urls.add_new_urls(new_urls)
             outputer.collect_data(new_data)
             count += 1
-            if count == 10:
+            if count == kMaxDepth:
                 break
 
         except Exception as err:
@@ -31,3 +33,4 @@ def spider(root_url):
 if __name__ == "__main__":
     root_url = "http://baike.baidu.com/view/21087.htm"
     spider(root_url)
+    
