@@ -13,8 +13,22 @@ headers = [
     {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/601.6.17 (KHTML, like Gecko) Version/9.1.1 Safari/601.6.17'}
     ]
 
+
+def main(tags):
+    spider_net = ''
+    for tag in tags:
+        spider_net += '**' * 40 + '\n' \
+                    + '  ' * 17 + tag + '\n' \
+                    + '**' * 40 + '\n'
+        spider_net += movie_spider(tag)
+        print tag + ' finished.'
+    
+    with open('movie_data.txt', 'w') as f:
+        f.write(spider_net)
+
+
 def movie_spider(movieTag):
-    """
+    """ Spider goes over the movie list, and looks up each entry for details.
     """
     root = "https://movie.douban.com/tag/%s" % movieTag
     global headers
@@ -23,7 +37,6 @@ def movie_spider(movieTag):
     tree = etree.HTML(html.decode('utf-8'))
     items = tree.xpath("//table/tr[@class='item']")
     print len(items)
-    count = 1 
     for item in items:
         print count
         itemURL = item.xpath("td/a[@class='nbg']/@href")[0].strip()
@@ -37,7 +50,6 @@ def movie_spider(movieTag):
         genre = info.xpath(".//span[@property='v:genre']/text()")
         initDate = info.xpath(".//span[@property='v:initialReleaseDate']/text()")
         rating = itemTree.xpath("//strong[@property='v:average']/text()")[0].strip()
-        count += 1
         
         result += '电影：' + title + '\n' \
             + '导演：' + '/'.join(director[:]) + '\n' \
@@ -48,16 +60,10 @@ def movie_spider(movieTag):
             + '评分：' + rating + '\n' \
             + '--' * 40 + '\n'
            
-    
-
-        
-    print result
-
-
+    return result
 
 
 if __name__ == "__main__":
-    tag = "宫崎骏"
-    movie_spider(tag)
+    tags = ['宫崎骏', '剧情']
+    main(tags)
     
-
