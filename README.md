@@ -4,4 +4,4 @@ This repo is my record of learning web crawler and data mining techniques.
 
 File info:
     learn_spider.py and utils.py give birth to my first trivial spider...
-    doubanMovie.py is the second spider which crawls data from movie.douban.com. Some of the idea come from HER
+    doubanMovie.py is the second spider which crawls data from movie.douban.com. Some of the idea come from https://github.com/plough/myCrawler/blob/master/doubanBook/bookSpiderXPath.py
