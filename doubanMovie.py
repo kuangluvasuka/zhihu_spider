@@ -52,13 +52,13 @@ def movie_spider(movieTag):
         rating = itemTree.xpath("//strong[@property='v:average']/text()")[0].strip()
         
         result += '电影：' + title + '\n' \
-            + '导演：' + '/'.join(director[:]) + '\n' \
-            + '编剧：' + '/'.join(scriptor[:]) + '\n' \
-            + '演员：' + '/'.join(actors[:]) + '\n' \
-            + '类型：' + '/'.join(genre[:]) + '\n' \
-            + '上映日期：' + '/'.join(initDate[:]) + '\n' \
-            + '评分：' + rating + '\n' \
-            + '--' * 40 + '\n'
+                + '导演：' + '/'.join(director[:]) + '\n' \
+                + '编剧：' + '/'.join(scriptor[:]) + '\n' \
+                + '演员：' + '/'.join(actors[:]) + '\n' \
+                + '类型：' + '/'.join(genre[:]) + '\n' \
+                + '上映日期：' + '/'.join(initDate[:]) + '\n' \
+                + '评分：' + rating + '\n' \
+                + '--' * 40 + '\n'
            
     return result
 
