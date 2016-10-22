@@ -38,7 +38,6 @@ def movie_spider(movieTag):
     items = tree.xpath("//table/tr[@class='item']")
     print len(items)
     for item in items:
-        print count
         itemURL = item.xpath("td/a[@class='nbg']/@href")[0].strip()
         itemHTML = requests.get(itemURL, headers=random.choice(headers)).content
         itemTree = etree.HTML(itemHTML.decode('utf-8'))
