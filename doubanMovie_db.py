@@ -13,6 +13,7 @@ sys.setdefaultencoding('utf8')
 class MovieSpider(object):
     def __init__(self):
         
+        self._tag_list = []
         self._movie_list = []
 
         self._client = MongoClient('mongodb://localhost:27017/')
@@ -28,11 +29,25 @@ class MovieSpider(object):
 
     def main(self, tags):
         logging.basicConfig(filename='spider.log', format='%(asctime)s %(message)s',  level=logging.INFO)
-        # spider_net = ''
-        for tag in tags:
+        self.genTags()
+        for tag in self._tag_list:
             self.movie_spider(tag)
             self._collection.insert_many(self._movie_list)
             self._movie_list = []
+
+
+    def genTags(self):
+        url = "https://movie.douban.com/tag/"
+        try:
+            html = requests.get(url, headers=random.choice(self.headers)).content
+            tree = etree.HTML(html.decode('utf-8'))
+            table = tree.xpath("//table[@class='tagCol']")[0]
+            for entry in table.xpath(".//td/a"):
+                tag = entry.xpath("text()")[0].strip()
+                self._tag_list.append(tag)
+
+        except Exception as e:
+            logging.exception('Error while generating tag lists')
 
 
     def movie_spider(self, movieTag):
@@ -57,6 +72,7 @@ class MovieSpider(object):
                 actors = info.xpath(".//a[@rel='v:starring']/text()")
                 genre = info.xpath(".//span[@property='v:genre']/text()")
                 initDate = info.xpath(".//span[@property='v:initialReleaseDate']/text()")
+                runtime = info.xpath(".//span[@property='v:runtime']/text()")
                 rating = itemTree.xpath("//strong[@property='v:average']/text()")[0].strip()
                 
                 result['title'] = title
@@ -65,12 +81,13 @@ class MovieSpider(object):
                 result['actors'] = '/'.join(actors[:])
                 result['genre'] = '/'.join(genre[:])
                 result['initDate'] = '/'.join(initDate[:])
+                result['runtime'] = '/'.join(runtime[:])
                 result['rating'] = rating
 
                 self._movie_list.append(result)
                 result = {}
         except Exception as e:
-            logging.exception("Crawling error")
+            logging.exception("Error while crawling tag: %s" % movieTag)
             
             
             
