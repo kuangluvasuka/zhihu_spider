@@ -7,8 +7,6 @@ import datetime
 import logging
 from pymongo import MongoClient
 from lxml import etree
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 class MovieSpider(object):
     def __init__(self):
