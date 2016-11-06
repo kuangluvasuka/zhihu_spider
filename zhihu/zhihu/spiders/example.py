@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+import json
 import scrapy
+from scrapy.contrib.spiders import CrawlSpider, Rule
+from scrapy.contrib.linkextractors import LinkExtractor
 
 
-class ExampleSpider(scrapy.Spider):
+class ExampleSpider(CrawlSpider):
     name = "zhihu"
     allowed_domains = ["www.zhihu.com"]
-    start_urls = ['https://www.zhihu.com/']
+    start_urls = ['https://www.zhihu.com/people/zephyrus-64']
     headers = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip,deflate",
@@ -16,7 +19,7 @@ class ExampleSpider(scrapy.Spider):
         "Referer": "https://www.zhihu.com/"
     }
     def start_requests(self):
-        return [scrapy.Request(self.start_urls[0],
+        return [scrapy.Request(url='https://www.zhihu.com',
                                headers=self.headers,
                                meta={'cookiejar': 1},
                                callback=self.post_login)]
@@ -26,17 +29,27 @@ class ExampleSpider(scrapy.Spider):
         xsrf = scrapy.Selector(response).xpath('//input[@name="_xsrf"]/@value').extract()[0]
         self.log("Get <_xsrf> value: %s" % xsrf)
         return [scrapy.FormRequest("https://www.zhihu.com/login/email",
-                                   meta={'cookiejar': response.meta['cookiejar']},
-                                   headers=self.headers,
-                                   formdata={'_xsrf': xsrf,
-                                             'email': 'your_email',
-                                             'password': 'your_password',
+                                   meta = {'cookiejar': response.meta['cookiejar']},
+                                   headers = self.headers,
+                                   formdata = {'_xsrf': xsrf,
+                                             'email': 'xxx',
+                                             'password': 'xxx',
                                              'remember_me': 'true'},
-                                   callback=self.after_login)]
+                                   callback = self.after_login)]
 
 
     def after_login(self, response):    
-        if b"authentication failed" in response.body:
-            self.logger.error("login failed")
+        if b"errcode" in response.body:
+            self.logger.error("Login failed")
             return
-        print("login succeed~~~~~~~~~~~~~~~~~~~~")
+        self.log("Login succeed")
+        # self.log(json.loads(response.body.decode('utf-8')))
+        return scrapy.Request(self.start_urls[0],
+                       meta = {'cookiejar': 1},
+                       headers = self.headers,
+                       callback = self.parse_question)
+        
+    def parse_question(self, response):
+        print("~~~~~~parse question")
+        print(response)
+                      
