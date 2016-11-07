@@ -8,9 +8,16 @@
 import scrapy
 
 
-class ZhihuItem(scrapy.Item):
+class ZhihuUserItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    name = scrapy.Field()
+    follower_num = scrapy.Field()
+    ask_num = scrapy.Field()
+    answer_num = scrapy.Field()
+    commend_num = scrapy.Field()
+
+
+
     
     

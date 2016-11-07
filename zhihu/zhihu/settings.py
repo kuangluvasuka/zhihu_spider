@@ -9,11 +9,20 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+
+DOWNLOAD_DELAY = 5
+
 BOT_NAME = 'zhihu'
 
 SPIDER_MODULES = ['zhihu.spiders']
 NEWSPIDER_MODULE = 'zhihu.spiders'
 
+ITEM_PIPELINES = {'zhihu.pipelines.MongoDBPipeline': 100, }
+
+MONGODB_SERVER = "localhost"
+MONGODB_PORT = 27017
+MONGODB_DB = "zhihu"
+MONGODB_COLLECTION = "questions"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'zhihu (+http://www.yourdomain.com)'
