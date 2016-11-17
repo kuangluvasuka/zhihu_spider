@@ -22,7 +22,7 @@ ITEM_PIPELINES = {'zhihu.pipelines.MongoDBPipeline': 100, }
 MONGODB_SERVER = "localhost"
 MONGODB_PORT = 27017
 MONGODB_DB = "zhihu"
-MONGODB_COLLECTION = "questions"
+MONGODB_COLLECTION = "user"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'zhihu (+http://www.yourdomain.com)'
