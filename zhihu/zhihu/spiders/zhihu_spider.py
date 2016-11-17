@@ -56,16 +56,6 @@ class ZhihuSpider(CrawlSpider):
         
     def parse_follower(self, response):
         self.logger.debug("parse follower")
-        # followers = scrapy.Selector(response).xpath("//div[@class='zm-list-content-medium']")
-        # for follower in followers:
-        #     user = ZhihuUserItem()
-        #     user_info = follower.xpath(".//a/text()").extract()
-        #     user['name'] = user_info[0]
-        #     user['follower_num'] = user_info[1]
-        #     user['ask_num'] = user_info[2]
-        #     user['answer_num'] = user_info[3]
-        #     user['commend_num'] = user_info[4]
-        #     yield user
         hash_id = json.loads(response.xpath('//div/@data-init').extract()[0])['params']['hash_id']
         self.logger.debug("hash_id is %s" % hash_id)
         follow = 'Followers'    # or 'Followees'
@@ -86,7 +76,6 @@ class ZhihuSpider(CrawlSpider):
         data = json.loads(response.body.decode('utf-8'))
         for msg in data['msg']:
             follower = ZhihuUserItem()
-            # follower['name'] = scrapy.Selector(msg).xpath('//a[@class="zg-link author-link"]/text()').extract()[0]
             user_info = scrapy.Selector(text=msg).xpath('//div[@class="zm-list-content-medium"]//a/text()').extract()
             follower['name'] = user_info[0]
             follower['follower_num'] = int(re.findall('\d+', user_info[1])[0])
