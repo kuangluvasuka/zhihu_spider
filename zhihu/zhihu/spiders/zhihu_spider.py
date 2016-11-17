@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import json
 import scrapy
 from scrapy.contrib.spiders import CrawlSpider, Rule
@@ -88,10 +89,10 @@ class ZhihuSpider(CrawlSpider):
             # follower['name'] = scrapy.Selector(msg).xpath('//a[@class="zg-link author-link"]/text()').extract()[0]
             user_info = scrapy.Selector(text=msg).xpath('//div[@class="zm-list-content-medium"]//a/text()').extract()
             follower['name'] = user_info[0]
-            follower['follower_num'] = user_info[1]
-            follower['ask_num'] = user_info[2]
-            follower['answer_num'] = user_info[3]
-            follower['commend_num'] = user_info[4]
+            follower['follower_num'] = int(re.findall('\d+', user_info[1])[0])
+            follower['ask_num'] = int(re.findall('\d+', user_info[2])[0])
+            follower['answer_num'] = int(re.findall('\d+', user_info[3])[0])
+            follower['commend_num'] = int(re.findall('\d+', user_info[4])[0])
             yield follower
 
 
