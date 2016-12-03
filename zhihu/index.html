@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+    <style>
+
+    .link {
+      stroke: #aaa;
+    }
+
+    .node text {
+      stroke: #256;
+      cursos: pointer;
+      display: none;
+    }
+
+    .node circle {
+      stroke: #555;
+      stroke-width: 2px;
+      fill: #fff;
+    }
+
+    .node:hover circle {
+      /*fill: #000;*/
+    }
+    .node:hover text {
+      display: inline;
+    }
+
+    </style>
+
+
+    <script type="text/javascript">
+      function draw(json) {
+        var width = 1200,
+            height = 800;
+
+        var svg = d3.select('body').append('svg')
+              .attr('width', width)
+              .attr('height', height);
+        
+        var force = d3.layout.force()
+              .gravity(.05)
+              .distance(200)
+              .charge(-100)
+              .size([width, height]);
+
+        force.nodes(json.nodes)
+          .links(json.links)
+          .start();
+        
+        var link = svg.selectAll('.link')
+              .data(json.links)
+            .enter().append('line')
+              .attr('class', 'link');
+              // .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+
+        var node = svg.selectAll('.node')
+              .data(json.nodes)
+            .enter().append('g')
+              .attr('class', 'node')
+              .call(force.drag);
+
+        node.append('circle')
+          .attr('r', function(d) { return Math.sqrt(d.follower_num); });
+
+        node.append('text')
+          .attr('dx', 12)
+          .attr('dy', '.35em')
+          .text(function(d) { return d.name + ' 关注' + d.follower_num; });
+
+        force.on('tick', function() {
+          link.attr("x1", function(d) { return d.source.x; })
+          link.attr("y1", function(d) { return d.source.y; })
+          link.attr("x2", function(d) { return d.target.x; })
+          link.attr("y2", function(d) { return d.target.y; });
+
+          node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+          // node.attr("cx", function(d) { return d.x; })
+          // node.attr("cy", function(d) { return d.y; });
+        });
+
+      };
+
+
+    </script>
+
+</head>
+
+<body>
+  <script type="text/javascript">
+
+  d3.json("followers.json", draw); 
+  </script>
+
+</body>
+
+
+</html>
