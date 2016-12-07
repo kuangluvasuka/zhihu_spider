@@ -38,8 +38,8 @@ class ZhihuSpider(CrawlSpider):
                                   meta={'cookiejar': response.meta['cookiejar']},
                                   headers=self.headers,
                                   formdata={'_xsrf': self.xsrf,
-                                            'email': '363286855@qq.com',
-                                            'password': 'asdfghjkl',
+                                            'email': 'xxx',
+                                            'password': 'xxx',
                                             'remember_me': 'true'},
                                   callback=self.after_login)
 
